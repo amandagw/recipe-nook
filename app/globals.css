@@ -154,6 +154,12 @@ button {
   font-size: 0.95rem;
 }
 
+.form-success {
+  margin: 0;
+  color: #476e4b;
+  font-size: 0.95rem;
+}
+
 .hero,
 .detail-hero {
   display: grid;
@@ -536,6 +542,19 @@ textarea {
   margin-bottom: 18px;
 }
 
+.manual-image-preview {
+  display: grid;
+  gap: 8px;
+}
+
+.manual-image-preview-frame {
+  min-height: 220px;
+  border-radius: 22px;
+  background-size: cover;
+  background-position: center;
+  border: 1px dashed rgba(121, 92, 67, 0.2);
+}
+
 .tag-row {
   display: flex;
   gap: 8px;
@@ -726,6 +745,14 @@ textarea {
   gap: 10px;
 }
 
+.detail-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
 .detail-summary span {
   padding: 10px 14px;
   border-radius: 999px;
@@ -735,6 +762,12 @@ textarea {
 
 .detail-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.empty-library {
+  display: grid;
+  gap: 14px;
+  align-content: start;
 }
 
 ul,
@@ -804,6 +837,7 @@ li + li {
   }
 
   .library-header,
+  .detail-topbar,
   .journal-header,
   .planner-item {
     flex-direction: column;

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { recipes } from "@/lib/mock-data";
 import { Difficulty, Recipe, RecipeStatus } from "@/lib/types";
 
 const filters: Array<RecipeStatus | "All"> = ["All", "To Try", "Tried"];
@@ -12,12 +11,14 @@ const difficultyFilters: Array<Difficulty | "Any"> = [
   "Medium",
   "Project"
 ];
+const fallbackHeroImage =
+  "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=1200&q=80";
 
 function stars(rating: number) {
   return `${"\u2605".repeat(rating)}${"\u2606".repeat(5 - rating)}`;
 }
 
-export function HomePage() {
+export function HomePage({ recipes }: { recipes: Recipe[] }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<RecipeStatus | "All">("All");
   const [folder, setFolder] = useState("All folders");
@@ -73,7 +74,7 @@ export function HomePage() {
             <span className="pin" />
             <div
               className="photo-image"
-              style={{ backgroundImage: `url(${recipes[0]?.image})` }}
+              style={{ backgroundImage: `url(${recipes[0]?.image ?? fallbackHeroImage})` }}
             />
             <p>Weeknight favorite</p>
           </div>
@@ -81,7 +82,9 @@ export function HomePage() {
             <span className="pin" />
             <div
               className="photo-image"
-              style={{ backgroundImage: `url(${recipes[2]?.image})` }}
+              style={{
+                backgroundImage: `url(${recipes[1]?.image ?? recipes[0]?.image ?? fallbackHeroImage})`
+              }}
             />
             <p>Slow morning bake</p>
           </div>
@@ -159,35 +162,51 @@ export function HomePage() {
         </div>
 
         <div className="library-content">
-          <div className={view === "grid" ? "recipe-grid" : "recipe-list"}>
-            {filteredRecipes.map((recipe) => (
-              <button
-                key={recipe.id}
-                className={`recipe-card ${activeRecipe?.id === recipe.id ? "recipe-card-active" : ""}`}
-                onClick={() => setActiveId(recipe.id)}
-              >
-                <div
-                  className="recipe-card-image"
-                  style={{ backgroundImage: `url(${recipe.image})` }}
-                />
-                <div className="recipe-card-body">
-                  <div className="recipe-card-meta">
-                    <span>{recipe.folder}</span>
-                    <span>{recipe.status}</span>
-                  </div>
-                  <h3>{recipe.title}</h3>
-                  <p>{recipe.description}</p>
-                  <div className="tag-row">
-                    {recipe.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
+          {filteredRecipes.length > 0 ? (
+            <>
+              <div className={view === "grid" ? "recipe-grid" : "recipe-list"}>
+                {filteredRecipes.map((recipe) => (
+                  <button
+                    key={recipe.id}
+                    className={`recipe-card ${activeRecipe?.id === recipe.id ? "recipe-card-active" : ""}`}
+                    onClick={() => setActiveId(recipe.id)}
+                  >
+                    <div
+                      className="recipe-card-image"
+                      style={{ backgroundImage: `url(${recipe.image})` }}
+                    />
+                    <div className="recipe-card-body">
+                      <div className="recipe-card-meta">
+                        <span>{recipe.folder}</span>
+                        <span>{recipe.status}</span>
+                      </div>
+                      <h3>{recipe.title}</h3>
+                      <p>{recipe.description}</p>
+                      <div className="tag-row">
+                        {recipe.tags.map((tag) => (
+                          <span key={tag}>{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
 
-          {activeRecipe ? <RecipeInspector recipe={activeRecipe} /> : null}
+              {activeRecipe ? <RecipeInspector recipe={activeRecipe} /> : null}
+            </>
+          ) : (
+            <div className="empty-library panel panel-warm">
+              <p className="eyebrow">Your Library</p>
+              <h2>No saved recipes yet</h2>
+              <p>
+                Start by adding your first recipe card. Once you save it, it will show up
+                here automatically.
+              </p>
+              <Link className="primary-button muted" href="/add-recipe">
+                Add your first recipe
+              </Link>
+            </div>
+          )}
         </div>
       </section>
     </main>
@@ -268,7 +287,9 @@ function RecipeInspector({ recipe }: { recipe: Recipe }) {
           <Link href={`/recipes/${recipe.slug}`} className="primary-button muted">
             Open full recipe page
           </Link>
-          <button className="secondary-button">Share recipe</button>
+          <Link href={`/recipes/${recipe.slug}/edit`} className="secondary-button">
+            Edit recipe
+          </Link>
         </div>
       </div>
     </aside>

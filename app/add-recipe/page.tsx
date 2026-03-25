@@ -1,6 +1,15 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { ManualRecipeForm } from "@/components/manual-recipe-form";
+import { getSession } from "@/lib/auth";
 
-export default function AddRecipePage() {
+export default async function AddRecipePage() {
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/auth");
+  }
+
   return (
     <main className="detail-shell">
       <Link className="text-link" href="/">
@@ -41,30 +50,7 @@ export default function AddRecipePage() {
           <button className="primary-button muted">Import recipe</button>
         </article>
 
-        <article className="panel">
-          <div className="section-heading">
-            <p className="eyebrow">Manual Entry</p>
-            <h2>Build a recipe card by hand</h2>
-          </div>
-          <div className="manual-fields">
-            <label className="input-label">
-              Title
-              <input value="Grandma's Sunday Chili" readOnly />
-            </label>
-            <label className="input-label">
-              Folder
-              <input value="Family Favorites" readOnly />
-            </label>
-            <label className="input-label">
-              Notes
-              <textarea
-                value="Add smoked paprika and a splash of coffee to deepen the flavor."
-                readOnly
-              />
-            </label>
-          </div>
-          <button className="secondary-button">Save draft</button>
-        </article>
+        <ManualRecipeForm />
       </section>
     </main>
   );
