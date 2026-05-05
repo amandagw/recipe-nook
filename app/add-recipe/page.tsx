@@ -2,6 +2,16 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ManualRecipeForm } from "@/components/manual-recipe-form";
 import { getSession } from "@/lib/auth";
+import { listRecipesByUser } from "@/lib/repositories/recipes";
+
+function getSavedRecipeOptions(
+  recipes: Awaited<ReturnType<typeof listRecipesByUser>>
+) {
+  return {
+    folders: Array.from(new Set(recipes.map((recipe) => recipe.folder).filter(Boolean))).sort(),
+    tags: Array.from(new Set(recipes.flatMap((recipe) => recipe.tags).filter(Boolean))).sort()
+  };
+}
 
 export default async function AddRecipePage() {
   const session = await getSession();
@@ -9,6 +19,9 @@ export default async function AddRecipePage() {
   if (!session) {
     redirect("/auth");
   }
+
+  const savedRecipes = await listRecipesByUser(session.userId);
+  const savedOptions = getSavedRecipeOptions(savedRecipes);
 
   return (
     <main className="detail-shell">
@@ -50,7 +63,7 @@ export default async function AddRecipePage() {
           <button className="primary-button muted">Import recipe</button>
         </article>
 
-        <ManualRecipeForm />
+        <ManualRecipeForm folderOptions={savedOptions.folders} tagOptions={savedOptions.tags} />
       </section>
     </main>
   );

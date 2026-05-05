@@ -3,6 +3,30 @@ import { getSession } from "@/lib/auth";
 import { createRecipe, listRecipesByUser, countRecipesBySlug, toObjectId } from "@/lib/repositories/recipes";
 import { recipes } from "@/lib/mock-data";
 
+const DEFAULT_FOLDER = "Unfiled";
+
+function parseTags(value: unknown) {
+  const tags = Array.isArray(value) ? value : String(value ?? "").split(",");
+
+  return Array.from(
+    new Set(
+      tags
+        .map((item) => String(item).trim())
+        .filter(Boolean)
+    )
+  );
+}
+
+function parseServings(value: unknown) {
+  const servings = Number(value);
+
+  if (!Number.isFinite(servings) || servings < 0) {
+    return 0;
+  }
+
+  return Math.floor(servings);
+}
+
 export async function GET() {
   const session = await getSession();
 
@@ -39,9 +63,10 @@ export async function POST(request: Request) {
 
   const payload = await request.json();
   const title = String(payload.title ?? "").trim();
-  const folder = String(payload.folder ?? "").trim();
+  const folder = String(payload.folder ?? "").trim() || DEFAULT_FOLDER;
   const notes = String(payload.notes ?? "").trim();
   const image = String(payload.image ?? "").trim();
+  const servings = parseServings(payload.servings);
 
   const ingredients = String(payload.ingredients ?? "")
     .split(/\r?\n/)
@@ -53,17 +78,10 @@ export async function POST(request: Request) {
     .map((item) => item.trim())
     .filter(Boolean);
 
-  const tags = String(payload.tags ?? "")
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const tags = parseTags(payload.tags);
 
   if (!title) {
     return NextResponse.json({ error: "Please add a recipe title." }, { status: 400 });
-  }
-
-  if (!folder) {
-    return NextResponse.json({ error: "Please choose a folder name." }, { status: 400 });
   }
 
   if (ingredients.length === 0) {
@@ -92,7 +110,7 @@ export async function POST(request: Request) {
     userId: toObjectId(session.userId),
     title,
     slug,
-    description: notes || `${title} saved in ${folder}.`,
+    description: notes,
     source: "Manual entry",
     sourceType: "Manual Entry",
     folder,
@@ -100,7 +118,7 @@ export async function POST(request: Request) {
     image,
     cookTime: "",
     prepTime: "",
-    servings: 0,
+    servings,
     tags,
     ingredients,
     steps,

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { DeleteRecipeButton } from "@/components/delete-recipe-button";
 import { getSession } from "@/lib/auth";
 import { recipes as mockRecipes } from "@/lib/mock-data";
 import { findRecipeBySlug } from "@/lib/repositories/recipes";
@@ -10,6 +11,29 @@ type PageProps = {
     slug: string;
   }>;
 };
+
+type RecipeDescriptionInput = {
+  title: string;
+  folder: string;
+  description: string;
+};
+
+function getDisplayDescription(recipe: RecipeDescriptionInput) {
+  const generatedDescriptions = [
+    `${recipe.title} saved in ${recipe.folder}.`,
+    `${recipe.title} saved to your recipe nook.`
+  ];
+
+  return generatedDescriptions.includes(recipe.description) ? "" : recipe.description;
+}
+
+function getServingsLabel(servings: number) {
+  if (servings <= 0) {
+    return "";
+  }
+
+  return `Serves ${servings}`;
+}
 
 export default async function RecipePage({ params }: PageProps) {
   const { slug } = await params;
@@ -22,6 +46,9 @@ export default async function RecipePage({ params }: PageProps) {
       notFound();
     }
 
+    const description = getDisplayDescription(recipe);
+    const servings = getServingsLabel(recipe.servings);
+
     return (
       <main className="detail-shell">
         <Link className="text-link" href="/">
@@ -32,13 +59,8 @@ export default async function RecipePage({ params }: PageProps) {
           <div>
             <p className="eyebrow">{recipe.folder}</p>
             <h1>{recipe.title}</h1>
-            <p className="hero-text">{recipe.description}</p>
-          </div>
-          <div className="detail-summary">
-            <span>{recipe.prepTime} prep</span>
-            <span>{recipe.cookTime} cook</span>
-            <span>{recipe.servings} servings</span>
-            <span>{recipe.status}</span>
+            {description ? <p className="hero-text">{description}</p> : null}
+            {servings ? <p className="recipe-fact-line">{servings}</p> : null}
           </div>
         </section>
 
@@ -54,17 +76,17 @@ export default async function RecipePage({ params }: PageProps) {
 
           <article className="panel">
             <p className="small-label">Method</p>
-            <ol>
+            <ul className="step-list">
               {recipe.steps.map((step) => (
                 <li key={step}>{step}</li>
               ))}
-            </ol>
+            </ul>
           </article>
 
           <article className="panel panel-warm">
             <p className="small-label">Source & Notes</p>
             <p>{recipe.source}</p>
-            <p>{recipe.notes}</p>
+            {recipe.notes ? <p>{recipe.notes}</p> : null}
           </article>
         </section>
       </main>
@@ -78,6 +100,8 @@ export default async function RecipePage({ params }: PageProps) {
   }
 
   const recipe = serializeRecipe(recipeDocument);
+  const description = getDisplayDescription(recipe);
+  const servings = getServingsLabel(recipe.servings);
 
   return (
     <main className="detail-shell">
@@ -85,22 +109,20 @@ export default async function RecipePage({ params }: PageProps) {
         <Link className="text-link" href="/">
           Back to Recipe Nook
         </Link>
-        <Link className="secondary-button" href={`/recipes/${recipe.slug}/edit`}>
-          Edit recipe
-        </Link>
+        <div className="detail-actions">
+          <Link className="secondary-button" href={`/recipes/${recipe.slug}/edit`}>
+            Edit recipe
+          </Link>
+          <DeleteRecipeButton recipeId={recipe.id} recipeTitle={recipe.title} />
+        </div>
       </div>
 
       <section className="detail-hero">
         <div>
           <p className="eyebrow">{recipe.folder}</p>
           <h1>{recipe.title}</h1>
-          <p className="hero-text">{recipe.description}</p>
-        </div>
-        <div className="detail-summary">
-          <span>{recipe.prepTime || "Prep not set"}</span>
-          <span>{recipe.cookTime || "Cook not set"}</span>
-          <span>{recipe.servings > 0 ? `${recipe.servings} servings` : "Servings not set"}</span>
-          <span>{recipe.status}</span>
+          {description ? <p className="hero-text">{description}</p> : null}
+          {servings ? <p className="recipe-fact-line">{servings}</p> : null}
         </div>
       </section>
 
@@ -116,17 +138,17 @@ export default async function RecipePage({ params }: PageProps) {
 
         <article className="panel">
           <p className="small-label">Method</p>
-          <ol>
+          <ul className="step-list">
             {recipe.steps.map((step) => (
               <li key={step}>{step}</li>
             ))}
-          </ol>
+          </ul>
         </article>
 
         <article className="panel panel-warm">
           <p className="small-label">Source & Notes</p>
           <p>{recipe.source}</p>
-          <p>{recipe.notes || "No notes added yet."}</p>
+          {recipe.notes ? <p>{recipe.notes}</p> : null}
         </article>
       </section>
     </main>

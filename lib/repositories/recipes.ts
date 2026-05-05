@@ -82,6 +82,38 @@ export async function updateRecipeById(
   });
 }
 
+export async function deleteRecipeById(userId: string, recipeId: string) {
+  const recipes = await getRecipesCollection();
+  const userObjectId = new ObjectId(userId);
+  const recipeObjectId = new ObjectId(recipeId);
+
+  const result = await recipes.deleteOne({
+    _id: recipeObjectId,
+    userId: userObjectId
+  });
+
+  if (result.deletedCount === 0) {
+    return false;
+  }
+
+  const [recipeNotes, mealPlans, shoppingLists] = await Promise.all([
+    getRecipeNotesCollection(),
+    getMealPlansCollection(),
+    getShoppingListsCollection()
+  ]);
+
+  await Promise.all([
+    recipeNotes.deleteMany({ userId: userObjectId, recipeId: recipeObjectId }),
+    mealPlans.deleteMany({ userId: userObjectId, recipeId: recipeObjectId }),
+    shoppingLists.updateMany(
+      { userId: userObjectId, recipeIds: recipeObjectId },
+      { $pull: { recipeIds: recipeObjectId } }
+    )
+  ]);
+
+  return true;
+}
+
 export async function getRecipeNotesCollection() {
   const database = await getDatabase();
   return database.collection<RecipeNoteDocument>("recipeNotes");

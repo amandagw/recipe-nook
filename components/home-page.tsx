@@ -18,6 +18,23 @@ function stars(rating: number) {
   return `${"\u2605".repeat(rating)}${"\u2606".repeat(5 - rating)}`;
 }
 
+function getDisplayDescription(recipe: Recipe) {
+  const generatedDescriptions = [
+    `${recipe.title} saved in ${recipe.folder}.`,
+    `${recipe.title} saved to your recipe nook.`
+  ];
+
+  return generatedDescriptions.includes(recipe.description) ? "" : recipe.description;
+}
+
+function getServingsLabel(servings: number) {
+  if (servings <= 0) {
+    return "";
+  }
+
+  return `Serves ${servings}`;
+}
+
 export function HomePage({ recipes }: { recipes: Recipe[] }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<RecipeStatus | "All">("All");
@@ -163,7 +180,10 @@ export function HomePage({ recipes }: { recipes: Recipe[] }) {
                         <span>{recipe.status}</span>
                       </div>
                       <h3>{recipe.title}</h3>
-                      <p>{recipe.description}</p>
+                      {getServingsLabel(recipe.servings) ? (
+                        <p className="recipe-fact-line">{getServingsLabel(recipe.servings)}</p>
+                      ) : null}
+                      {getDisplayDescription(recipe) ? <p>{getDisplayDescription(recipe)}</p> : null}
                       <div className="tag-row">
                         {recipe.tags.map((tag) => (
                           <span key={tag}>{tag}</span>
@@ -197,6 +217,8 @@ export function HomePage({ recipes }: { recipes: Recipe[] }) {
 
 function RecipeInspector({ recipe }: { recipe: Recipe }) {
   const latestJournal = recipe.journal[0];
+  const description = getDisplayDescription(recipe);
+  const servings = getServingsLabel(recipe.servings);
 
   return (
     <aside className="recipe-inspector">
@@ -207,14 +229,8 @@ function RecipeInspector({ recipe }: { recipe: Recipe }) {
           <h2>{recipe.title}</h2>
         </div>
 
-        <div className="inspector-meta">
-          <span>{recipe.prepTime} prep</span>
-          <span>{recipe.cookTime} cook</span>
-          <span>{recipe.servings} servings</span>
-          <span>{recipe.sourceType}</span>
-        </div>
-
-        <p className="inspector-description">{recipe.description}</p>
+        {description ? <p className="inspector-description">{description}</p> : null}
+        {servings ? <p className="recipe-fact-line">{servings}</p> : null}
 
         <div className="inspector-columns">
           <div>
@@ -227,11 +243,11 @@ function RecipeInspector({ recipe }: { recipe: Recipe }) {
           </div>
           <div>
             <p className="small-label">Steps</p>
-            <ol>
+            <ul className="step-list">
               {recipe.steps.map((step) => (
                 <li key={step}>{step}</li>
               ))}
-            </ol>
+            </ul>
           </div>
         </div>
 

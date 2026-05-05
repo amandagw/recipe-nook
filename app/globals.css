@@ -165,12 +165,12 @@ button {
 }
 
 .detail-shell::before {
-  top: 12px;
-  right: clamp(-120px, -6vw, -34px);
-  width: min(520px, 42vw);
+  top: 104px;
+  right: clamp(24px, 4vw, 76px);
+  width: min(500px, 38vw);
   aspect-ratio: 1781 / 883;
-  transform: rotate(2deg);
-  opacity: 0.92;
+  transform: rotate(-1deg);
+  opacity: 0.82;
   z-index: -1;
 }
 
@@ -317,6 +317,7 @@ textarea {
 
 .primary-button,
 .secondary-button,
+.danger-button,
 .text-link,
 .view-switcher button {
   border-radius: 999px;
@@ -327,7 +328,8 @@ textarea {
 }
 
 .primary-button,
-.secondary-button {
+.secondary-button,
+.danger-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -350,6 +352,20 @@ textarea {
   color: var(--ink);
 }
 
+.danger-button {
+  background: rgba(255, 250, 244, 0.88);
+  border: 1px solid rgba(155, 61, 45, 0.28);
+  color: #9b3d2d;
+  backdrop-filter: blur(8px);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.danger-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
 .text-link {
   display: inline-flex;
   padding: 4px 0;
@@ -359,10 +375,17 @@ textarea {
 
 .primary-button:hover,
 .secondary-button:hover,
+.danger-button:hover,
 .text-link:hover,
 .view-switcher button:hover,
 .recipe-card:hover {
   transform: translateY(-2px);
+}
+
+.primary-button:disabled:hover,
+.secondary-button:disabled:hover,
+.danger-button:disabled:hover {
+  transform: none;
 }
 
 .hero-card,
@@ -464,6 +487,17 @@ textarea {
   color: var(--muted);
 }
 
+.field-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.optional-label {
+  color: rgba(114, 95, 88, 0.72);
+  font-size: 0.82rem;
+}
+
 input,
 select,
 textarea {
@@ -494,6 +528,67 @@ textarea {
   margin-bottom: 18px;
 }
 
+.tag-entry-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.tag-add-button {
+  min-width: 72px;
+  padding-inline: 16px;
+}
+
+.choice-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: -6px;
+}
+
+.choice-chip-group {
+  display: grid;
+  gap: 8px;
+}
+
+.chip-group-label {
+  margin-bottom: 0;
+}
+
+.selected-chip-row {
+  margin-top: 0;
+}
+
+.choice-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(111, 139, 115, 0.14);
+  color: var(--muted);
+  font-size: 0.9rem;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.choice-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(201, 120, 97, 0.34);
+  color: var(--ink);
+}
+
+.choice-chip-active {
+  background: rgba(201, 79, 61, 0.14);
+  border-color: rgba(201, 79, 61, 0.3);
+  color: var(--ink);
+}
+
 .manual-image-preview {
   display: grid;
   gap: 8px;
@@ -515,7 +610,6 @@ textarea {
 
 .tag-row span,
 .status-pill,
-.inspector-meta span,
 .journal-stats span {
   display: inline-flex;
   align-items: center;
@@ -613,6 +707,13 @@ textarea {
   font-size: 0.88rem;
 }
 
+.recipe-fact-line {
+  color: var(--tomato);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 8px 0 0;
+}
+
 .recipe-inspector {
   overflow: hidden;
 }
@@ -625,7 +726,6 @@ textarea {
   padding: 22px;
 }
 
-.inspector-meta,
 .journal-stats {
   display: flex;
   flex-wrap: wrap;
@@ -691,25 +791,38 @@ textarea {
   margin-bottom: 14px;
 }
 
-.detail-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
 .detail-topbar {
   display: flex;
   justify-content: space-between;
   gap: 16px;
   align-items: center;
   margin-bottom: 18px;
+  position: relative;
+  z-index: 2;
 }
 
-.detail-summary span {
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid var(--line);
+.detail-topbar .secondary-button {
+  background: rgba(255, 250, 244, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.detail-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.delete-recipe-control {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+.delete-recipe-error {
+  max-width: 230px;
+  text-align: right;
 }
 
 .detail-grid {
@@ -730,6 +843,11 @@ ol {
 
 li + li {
   margin-top: 8px;
+}
+
+.step-list {
+  list-style: none;
+  padding-left: 0;
 }
 
 @media (max-width: 1080px) {
@@ -800,6 +918,16 @@ li + li {
   .planner-item {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .detail-actions,
+  .delete-recipe-control {
+    justify-items: start;
+    justify-content: flex-start;
+  }
+
+  .delete-recipe-error {
+    text-align: left;
   }
 
   .hero-card {
