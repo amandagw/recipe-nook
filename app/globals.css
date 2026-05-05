@@ -1,18 +1,21 @@
 :root {
-  --background: #f6efe5;
-  --background-deep: #ead9c7;
-  --paper: rgba(255, 251, 245, 0.84);
-  --paper-strong: #fffaf4;
+  --background: #f8efe1;
+  --background-deep: #ead9c1;
+  --paper: rgba(255, 250, 240, 0.9);
+  --paper-strong: #fff9ec;
   --ink: #3c2f2b;
-  --muted: #7e675d;
+  --muted: #725f58;
   --rose: #c97861;
   --sage: #6f8b73;
   --gold: #d9b773;
-  --line: rgba(90, 62, 50, 0.12);
-  --shadow: 0 24px 60px rgba(84, 57, 45, 0.12);
-  --radius-xl: 30px;
-  --radius-lg: 22px;
-  --radius-md: 16px;
+  --tomato: #c94f3d;
+  --sky: #6f9bb1;
+  --butter: #f0c96d;
+  --line: rgba(84, 57, 45, 0.16);
+  --shadow: 0 20px 42px rgba(72, 47, 35, 0.14);
+  --radius-xl: 16px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
 }
 
 * {
@@ -28,9 +31,8 @@ body {
   min-height: 100vh;
   color: var(--ink);
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), transparent 28%),
-    radial-gradient(circle at right 15%, rgba(217, 183, 115, 0.22), transparent 24%),
-    linear-gradient(180deg, #f8f3eb 0%, #f3e7da 100%);
+    linear-gradient(90deg, rgba(111, 155, 177, 0.08) 0 1px, transparent 1px 22px),
+    linear-gradient(180deg, #fbf5ea 0%, #f0dfcc 100%);
   font-family: "Trebuchet MS", "Avenir Next", Arial, sans-serif;
 }
 
@@ -39,11 +41,11 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.22;
+  opacity: 0.3;
   background-image:
-    linear-gradient(rgba(111, 139, 115, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(111, 139, 115, 0.05) 1px, transparent 1px);
-  background-size: 26px 26px;
+    repeating-linear-gradient(0deg, transparent 0 21px, rgba(111, 139, 115, 0.08) 22px),
+    repeating-linear-gradient(90deg, transparent 0 21px, rgba(201, 79, 61, 0.045) 22px);
+  background-size: 22px 22px;
 }
 
 body {
@@ -93,17 +95,41 @@ button {
   justify-content: space-between;
   gap: 18px;
   padding: 14px 18px;
-  border-radius: 999px;
-  background: rgba(255, 250, 244, 0.84);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
+  border-radius: 14px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.44), rgba(255, 249, 236, 0.9)),
+    var(--paper-strong);
+  border: 1px solid rgba(116, 81, 62, 0.14);
+  box-shadow: 0 12px 30px rgba(72, 47, 35, 0.13);
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.site-header::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 42px;
+  width: 108px;
+  height: 24px;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(111, 139, 115, 0.26) 0 10px,
+      rgba(255, 255, 255, 0.36) 10px 20px
+    );
+  border: 1px solid rgba(89, 71, 54, 0.08);
+  transform: rotate(-3deg);
+  pointer-events: none;
+  opacity: 0.86;
 }
 
 .site-brand {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.2rem;
   font-weight: 700;
+  color: var(--tomato);
 }
 
 .site-nav,
@@ -123,6 +149,39 @@ button {
   width: min(540px, calc(100% - 24px));
   margin: 0 auto;
   padding: 32px 0 64px;
+  position: relative;
+  z-index: 1;
+}
+
+.detail-shell::before,
+.auth-shell::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  background-image: url("/scrapbook/title-sticker-sheet.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: drop-shadow(0 18px 24px rgba(61, 40, 28, 0.16));
+}
+
+.detail-shell::before {
+  top: 12px;
+  right: clamp(-120px, -6vw, -34px);
+  width: min(520px, 42vw);
+  aspect-ratio: 1781 / 883;
+  transform: rotate(2deg);
+  opacity: 0.92;
+  z-index: -1;
+}
+
+.auth-shell::before {
+  top: -26px;
+  right: -84px;
+  width: min(430px, 84vw);
+  aspect-ratio: 1781 / 883;
+  transform: rotate(4deg);
+  opacity: 0.72;
+  z-index: -1;
 }
 
 .auth-card {
@@ -178,7 +237,20 @@ button {
 }
 
 .hero-copy {
-  padding: 18px 0;
+  padding: 26px 0;
+  position: relative;
+}
+
+.hero-title-wrap {
+  position: relative;
+  max-width: 660px;
+  padding-top: 0;
+}
+
+.hero-title-wrap h1 {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 3px 0 rgba(255, 249, 236, 0.86);
 }
 
 .eyebrow,
@@ -311,157 +383,37 @@ textarea {
 }
 
 .hero-card {
-  min-height: 360px;
+  min-height: 430px;
   padding: 24px;
   position: relative;
   overflow: hidden;
 }
 
-.collage {
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(246, 235, 222, 0.82)),
-    var(--paper);
-}
-
-.pinboard-photo {
-  position: absolute;
-  padding: 18px;
-  border-radius: 24px;
-  box-shadow: 0 12px 30px rgba(64, 37, 25, 0.14);
-  background: #fffdf8;
-}
-
-.photo-image {
-  width: 100%;
-  height: 190px;
-  border-radius: 16px;
-  background-size: cover;
-  background-position: center;
-  margin-bottom: 12px;
-}
-
-.photo-main {
-  top: 28px;
-  left: 28px;
-  width: 240px;
-  transform: rotate(-5deg);
-}
-
-.photo-secondary {
-  right: 34px;
-  top: 118px;
-  width: 210px;
-  transform: rotate(7deg);
-}
-
-.pinboard-photo p {
-  margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.05rem;
-}
-
-.pin {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--rose);
-  top: 12px;
-  right: 18px;
-}
-
-.doodle {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0.85;
-}
-
-.doodle-heart {
-  width: 74px;
-  height: 74px;
-  left: 280px;
-  top: 48px;
-}
-
-.doodle-heart::before,
-.doodle-heart::after {
-  content: "";
-  position: absolute;
-  width: 34px;
-  height: 54px;
-  border: 3px solid var(--rose);
-  border-bottom: 0;
-  border-radius: 34px 34px 0 0;
-}
-
-.doodle-heart::before {
-  left: 12px;
-  transform: rotate(-45deg);
-  transform-origin: left bottom;
-}
-
-.doodle-heart::after {
-  left: 29px;
-  transform: rotate(45deg);
-  transform-origin: right bottom;
-}
-
-.doodle-spark {
-  width: 56px;
-  height: 56px;
-  right: 74px;
-  top: 40px;
-}
-
-.doodle-spark::before,
-.doodle-spark::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 3px dashed rgba(111, 139, 115, 0.9);
-}
-
-.doodle-spark::after {
-  inset: 16px;
-  border-style: solid;
+.sticker-sheet-board {
+  display: grid;
+  place-items: center;
+  min-height: 360px;
+  padding: 0;
+  overflow: visible;
   background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
-.doodle-swirl {
-  width: 130px;
-  height: 72px;
-  left: 120px;
-  bottom: 30px;
-  border-bottom: 4px solid rgba(217, 183, 115, 0.95);
-  border-radius: 50%;
-  transform: rotate(-8deg);
+.sticker-sheet-board::before {
+  content: none;
 }
 
-.doodle-swirl::before,
-.doodle-swirl::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  border: 3px solid transparent;
-}
-
-.doodle-swirl::before {
-  width: 42px;
-  height: 42px;
-  right: -10px;
-  bottom: -10px;
-  border-right-color: rgba(217, 183, 115, 0.95);
-  border-bottom-color: rgba(217, 183, 115, 0.95);
-}
-
-.doodle-swirl::after {
-  width: 28px;
-  height: 28px;
-  right: 2px;
-  bottom: 2px;
-  border-right-color: rgba(217, 183, 115, 0.95);
-  border-bottom-color: rgba(217, 183, 115, 0.95);
+.pinboard-sticker-sheet {
+  position: relative;
+  z-index: 2;
+  width: min(126%, 660px);
+  max-width: none;
+  max-height: 360px;
+  object-fit: contain;
+  transform: rotate(-1.5deg);
+  filter: drop-shadow(0 18px 24px rgba(61, 40, 28, 0.24));
 }
 
 .stats-strip,
@@ -582,7 +534,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: end;
+  align-items: flex-end;
   margin-bottom: 18px;
 }
 
@@ -802,7 +754,7 @@ li + li {
 
 @media (max-width: 720px) {
   body {
-    padding-top: 136px;
+    padding-top: 170px;
   }
 
   .page-shell,
@@ -812,7 +764,7 @@ li + li {
   }
 
   .site-header {
-    border-radius: 28px;
+    border-radius: 14px;
     align-items: flex-start;
     flex-direction: column;
   }
@@ -825,6 +777,12 @@ li + li {
   h1 {
     max-width: none;
     font-size: 2.9rem;
+  }
+
+  .hero-title-wrap {
+    display: grid;
+    gap: 14px;
+    padding-top: 0;
   }
 
   .stats-strip,
@@ -845,47 +803,32 @@ li + li {
   }
 
   .hero-card {
-    min-height: 320px;
+    min-height: 560px;
+    padding: 18px;
   }
 
-  .pinboard-photo {
-    width: auto;
-    right: 20px;
-    left: 20px;
-    transform: none;
+  .sticker-sheet-board {
+    min-height: 300px;
+    padding: 0;
   }
 
-  .photo-main {
-    top: 20px;
+  .pinboard-sticker-sheet {
+    width: 138%;
+    max-height: 280px;
+    transform: rotate(-1deg);
   }
 
-  .photo-secondary {
-    top: 122px;
+  .detail-shell::before {
+    top: 58px;
+    right: -174px;
+    width: 330px;
+    opacity: 0.16;
   }
 
-  .photo-image {
-    height: 132px;
-  }
-
-  .doodle-heart {
-    left: auto;
-    right: 38px;
-    top: 24px;
-    transform: scale(0.8);
-  }
-
-  .doodle-spark {
-    right: auto;
-    left: 30px;
-    bottom: 36px;
-    top: auto;
-    transform: scale(0.75);
-  }
-
-  .doodle-swirl {
-    left: auto;
-    right: 24px;
-    bottom: 18px;
-    width: 88px;
+  .auth-shell::before {
+    top: -6px;
+    right: -132px;
+    width: 360px;
+    opacity: 0.36;
   }
 }

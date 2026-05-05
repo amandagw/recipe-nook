@@ -11,8 +11,8 @@ const difficultyFilters: Array<Difficulty | "Any"> = [
   "Medium",
   "Project"
 ];
-const fallbackHeroImage =
-  "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=1200&q=80";
+
+const pinboardStickerSheet = "/scrapbook/title-sticker-sheet.png";
 
 function stars(rating: number) {
   return `${"\u2605".repeat(rating)}${"\u2606".repeat(5 - rating)}`;
@@ -51,9 +51,11 @@ export function HomePage({ recipes }: { recipes: Recipe[] }) {
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">The Recipe Nook</p>
-          <h1>The Recipe Nook</h1>
+          <div className="hero-title-wrap">
+            <h1>The Recipe Nook</h1>
+          </div>
           <p className="hero-text">
-            A cozy place to search, save, and revisit the recipes you actually want to
+            Clip ideas, tuck away notes, and revisit the recipes you actually want to
             make again.
           </p>
           <div className="hero-actions">
@@ -69,28 +71,8 @@ export function HomePage({ recipes }: { recipes: Recipe[] }) {
           </div>
         </div>
 
-        <div className="hero-card collage">
-          <div className="pinboard-photo photo-main">
-            <span className="pin" />
-            <div
-              className="photo-image"
-              style={{ backgroundImage: `url(${recipes[0]?.image ?? fallbackHeroImage})` }}
-            />
-            <p>Weeknight favorite</p>
-          </div>
-          <div className="pinboard-photo photo-secondary">
-            <span className="pin" />
-            <div
-              className="photo-image"
-              style={{
-                backgroundImage: `url(${recipes[1]?.image ?? recipes[0]?.image ?? fallbackHeroImage})`
-              }}
-            />
-            <p>Slow morning bake</p>
-          </div>
-          <div className="doodle doodle-heart" />
-          <div className="doodle doodle-spark" />
-          <div className="doodle doodle-swirl" />
+        <div className="hero-card sticker-sheet-board" aria-label="Hand-drawn recipe sticker sheet">
+          <img className="pinboard-sticker-sheet" src={pinboardStickerSheet} alt="" aria-hidden="true" />
         </div>
       </section>
 
