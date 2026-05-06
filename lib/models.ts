@@ -50,6 +50,7 @@ export type RecipeNoteDocument = {
 export type MealPlanDocument = {
   _id?: ObjectId;
   userId: ObjectId;
+  weekStart: string;
   day: string;
   meal: string;
   recipeId: ObjectId;

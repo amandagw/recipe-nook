@@ -826,6 +826,201 @@ textarea {
   border-bottom: 0;
 }
 
+.planner-preview-link {
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.planner-preview-link:hover {
+  color: var(--rose);
+}
+
+.weekly-planner-section {
+  display: grid;
+  gap: 18px;
+  overflow-x: auto;
+}
+
+.weekly-planner-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-end;
+}
+
+.week-picker {
+  display: grid;
+  gap: 8px;
+  width: min(220px, 100%);
+  min-width: min(100%, 220px);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.planner-save-status {
+  min-height: 22px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.weekly-planner-table-wrap {
+  overflow-x: auto;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.weekly-planner-grid {
+  width: 100%;
+  min-width: 760px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid rgba(61, 40, 28, 0.24);
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255, 252, 246, 0.72);
+}
+
+.weekly-planner-header,
+.weekly-planner-day,
+.weekly-planner-cell {
+  height: 96px;
+  padding: 14px;
+  border-right: 1px solid rgba(61, 40, 28, 0.2);
+  border-bottom: 1px solid rgba(61, 40, 28, 0.2);
+}
+
+.weekly-planner-header {
+  height: 54px;
+  background: rgba(255, 250, 244, 0.92);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.weekly-planner-day {
+  width: 116px;
+  background: rgba(255, 250, 244, 0.78);
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.weekly-planner-cell {
+  vertical-align: top;
+}
+
+.weekly-planner-header:last-child,
+.weekly-planner-cell:last-child {
+  border-right: 0;
+}
+
+.weekly-planner-grid tbody tr:last-child .weekly-planner-day,
+.weekly-planner-grid tbody tr:last-child .weekly-planner-cell {
+  border-bottom: 0;
+}
+
+.planner-cell-content {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.planner-recipe-list {
+  display: grid;
+  gap: 6px;
+}
+
+.planner-recipe-link {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-decoration: none;
+}
+
+.planner-recipe-link:hover {
+  color: var(--rose);
+}
+
+.planner-cell-action {
+  width: fit-content;
+  color: var(--rose);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.planner-multi-select {
+  position: relative;
+  width: 100%;
+}
+
+.planner-multi-select summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 34px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 250, 244, 0.84);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 700;
+  list-style: none;
+}
+
+.planner-multi-select summary::-webkit-details-marker {
+  display: none;
+}
+
+.planner-multi-menu {
+  display: grid;
+  gap: 8px;
+  max-height: 210px;
+  overflow-y: auto;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(121, 92, 67, 0.16);
+}
+
+.planner-multi-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  font-size: 0.9rem;
+}
+
+.planner-multi-option input {
+  width: auto;
+  accent-color: var(--rose);
+}
+
+.planner-done-button {
+  width: fit-content;
+  padding: 8px 12px;
+}
+
+.planner-empty-text {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .shopping-columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1174,7 +1369,8 @@ li + li {
   .library-header,
   .detail-topbar,
   .journal-header,
-  .planner-item {
+  .planner-item,
+  .weekly-planner-heading {
     flex-direction: column;
     align-items: flex-start;
   }

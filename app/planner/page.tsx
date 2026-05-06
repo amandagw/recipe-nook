@@ -1,7 +1,59 @@
 import Link from "next/link";
-import { plannedMeals, recipes } from "@/lib/mock-data";
+import { redirect } from "next/navigation";
+import { WeeklyMealPlanner } from "@/components/weekly-meal-planner";
+import { getSession } from "@/lib/auth";
+import {
+  listMealPlanEntriesByWeek,
+  listRecipesByUser
+} from "@/lib/repositories/recipes";
+import {
+  isPlannerDay,
+  isPlannerMeal,
+  normalizeWeekStart,
+  PlannerDay,
+  PlannerMeal
+} from "@/lib/meal-planner";
 
-export default function PlannerPage() {
+type PlannerPageProps = {
+  searchParams?: Promise<{
+    week?: string;
+  }>;
+};
+
+export default async function PlannerPage({ searchParams }: PlannerPageProps) {
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/auth");
+  }
+
+  const resolvedSearchParams = await searchParams;
+  const weekStart = normalizeWeekStart(resolvedSearchParams?.week);
+  const [recipes, mealPlanEntries] = await Promise.all([
+    listRecipesByUser(session.userId),
+    listMealPlanEntriesByWeek(session.userId, weekStart)
+  ]);
+  const recipeOptions = recipes
+    .map((recipe) => ({
+      id: recipe._id?.toString() ?? "",
+      title: recipe.title,
+      slug: recipe.slug
+    }))
+    .filter((recipe) => recipe.id);
+  const entries = mealPlanEntries.flatMap((entry) => {
+    if (!isPlannerDay(entry.day) || !isPlannerMeal(entry.meal)) {
+      return [];
+    }
+
+    return [
+      {
+        day: entry.day as PlannerDay,
+        meal: entry.meal as PlannerMeal,
+        recipeId: entry.recipeId.toString()
+      }
+    ];
+  });
+
   return (
     <main className="detail-shell">
       <Link className="text-link" href="/">
@@ -10,29 +62,15 @@ export default function PlannerPage() {
       <section className="detail-hero">
         <div>
           <p className="eyebrow">Meal Planning</p>
-          <h1>Week at a glance</h1>
+          <h1>Weekly meal planner</h1>
           <p className="hero-text">
-            Assign saved recipes to your week so the shopping list and dinner decisions
-            come together in one calm flow.
+            Add saved recipes to breakfast, lunch, dinner, or other. Leave blanks
+            open and reuse favorites across as many days as you like.
           </p>
         </div>
       </section>
 
-      <section className="detail-grid">
-        {plannedMeals.map((plan) => {
-          const recipe = recipes.find((entry) => entry.id === plan.recipeId);
-
-          return (
-            <article key={`${plan.day}-${plan.meal}`} className="panel">
-              <p className="small-label">
-                {plan.day} • {plan.meal}
-              </p>
-              <h2>{recipe?.title}</h2>
-              <p>{plan.note}</p>
-            </article>
-          );
-        })}
-      </section>
+      <WeeklyMealPlanner entries={entries} recipes={recipeOptions} weekStart={weekStart} />
     </main>
   );
 }

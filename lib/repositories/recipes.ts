@@ -241,7 +241,57 @@ export async function updateRecipeNoteById(
 
 export async function getMealPlansCollection() {
   const database = await getDatabase();
-  return database.collection<MealPlanDocument>("mealPlans");
+  const collection = database.collection<MealPlanDocument>("mealPlans");
+  await collection.createIndex({ userId: 1, weekStart: 1 });
+  return collection;
+}
+
+export async function listMealPlanEntriesByWeek(userId: string, weekStart: string) {
+  const mealPlans = await getMealPlansCollection();
+  return mealPlans
+    .find({
+      userId: new ObjectId(userId),
+      weekStart
+    })
+    .toArray();
+}
+
+export async function updateMealPlanEntriesByWeek(
+  userId: string,
+  weekStart: string,
+  entries: Array<{
+    day: string;
+    meal: string;
+    recipeId: string;
+  }>
+) {
+  const mealPlans = await getMealPlansCollection();
+  const userObjectId = new ObjectId(userId);
+  const now = new Date();
+
+  await mealPlans.deleteMany({
+    userId: userObjectId,
+    weekStart
+  });
+
+  if (entries.length === 0) {
+    return [];
+  }
+
+  const documents: MealPlanDocument[] = entries.map((entry) => ({
+    userId: userObjectId,
+    weekStart,
+    day: entry.day,
+    meal: entry.meal,
+    recipeId: new ObjectId(entry.recipeId),
+    note: "",
+    createdAt: now,
+    updatedAt: now
+  }));
+
+  await mealPlans.insertMany(documents);
+
+  return documents;
 }
 
 export async function getShoppingListsCollection() {

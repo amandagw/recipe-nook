@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { plannedMeals, recipes, shoppingList } from "@/lib/mock-data";
-import { getShoppingListByUser } from "@/lib/repositories/recipes";
+import {
+  getShoppingListByUser,
+  listMealPlanEntriesByWeek,
+  listRecipesByUser
+} from "@/lib/repositories/recipes";
+import { getCurrentWeekStart } from "@/lib/meal-planner";
 import { SHOPPING_CATEGORIES, type ShoppingListItem } from "@/lib/shopping-list";
 
 type ShoppingPreviewGroup = {
@@ -12,6 +17,13 @@ type ShoppingPreviewGroup = {
     checked: boolean;
   }>;
   hiddenCount: number;
+};
+
+type MealPlanPreviewItem = {
+  day: string;
+  meal: string;
+  title: string;
+  slug: string;
 };
 
 function groupShoppingItems(items: ShoppingListItem[]): ShoppingPreviewGroup[] {
@@ -54,9 +66,54 @@ function getMockShoppingPreview(): ShoppingPreviewGroup[] {
   }));
 }
 
+function getMockMealPlanPreview(): MealPlanPreviewItem[] {
+  return plannedMeals.map((plan) => {
+    const recipe = recipes.find((entry) => entry.id === plan.recipeId);
+
+    return {
+      day: plan.day,
+      meal: plan.meal,
+      title: recipe?.title ?? "Recipe",
+      slug: recipe?.slug ?? ""
+    };
+  });
+}
+
 export default async function PlanPage() {
   const session = await getSession();
-  const userShoppingList = session ? await getShoppingListByUser(session.userId) : null;
+  const currentWeekStart = getCurrentWeekStart();
+  const [userShoppingList, mealPlanEntries, userRecipes] = session
+    ? await Promise.all([
+        getShoppingListByUser(session.userId),
+        listMealPlanEntriesByWeek(session.userId, currentWeekStart),
+        listRecipesByUser(session.userId)
+      ])
+    : [null, [], []];
+  const userRecipesById = new Map(
+    userRecipes.map((recipe) => [
+      recipe._id?.toString() ?? "",
+      {
+        title: recipe.title,
+        slug: recipe.slug
+      }
+    ])
+  );
+  const mealPlanPreview = session
+    ? mealPlanEntries.flatMap((entry) => {
+        const recipe = userRecipesById.get(entry.recipeId.toString());
+
+        return recipe
+          ? [
+              {
+                day: entry.day,
+                meal: entry.meal,
+                title: recipe.title,
+                slug: recipe.slug
+              }
+            ]
+          : [];
+      })
+    : getMockMealPlanPreview();
   const shoppingPreview = userShoppingList
     ? groupShoppingItems(userShoppingList.items)
     : getMockShoppingPreview();
@@ -86,25 +143,33 @@ export default async function PlanPage() {
             <p className="eyebrow">Meal Planning</p>
             <h2>Weekly calendar</h2>
           </div>
-          <div className="planner-list">
-            {plannedMeals.map((plan) => {
-              const recipe = recipes.find((entry) => entry.id === plan.recipeId);
-
-              return (
-                <div key={`${plan.day}-${plan.meal}`} className="planner-item">
+          {session ? <p className="shopping-preview-count">Week of {currentWeekStart}</p> : null}
+          {mealPlanPreview.length > 0 ? (
+            <div className="planner-list">
+              {mealPlanPreview.slice(0, 5).map((plan) => (
+                <div key={`${plan.day}-${plan.meal}-${plan.slug}`} className="planner-item">
                   <div>
                     <strong>{plan.day}</strong>
                     <span>{plan.meal}</span>
                   </div>
                   <div>
-                    <strong>{recipe?.title}</strong>
-                    <span>{plan.note}</span>
+                    <Link className="planner-preview-link" href={`/recipes/${plan.slug}`}>
+                      {plan.title}
+                    </Link>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-          <Link className="text-link" href="/planner">
+              ))}
+              {mealPlanPreview.length > 5 ? (
+                <p className="shopping-preview-more">+{mealPlanPreview.length - 5} more meals</p>
+              ) : null}
+            </div>
+          ) : (
+            <p className="shopping-preview-empty">
+              Your week is blank. Open the planner to add recipes for breakfast, lunch,
+              dinner, or other.
+            </p>
+          )}
+          <Link className="text-link" href={`/planner?week=${currentWeekStart}`}>
             Open meal planner
           </Link>
         </article>
