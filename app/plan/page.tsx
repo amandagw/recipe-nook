@@ -26,6 +26,11 @@ type MealPlanPreviewItem = {
   slug: string;
 };
 
+type MealPlanPreviewDay = {
+  day: string;
+  meals: MealPlanPreviewItem[];
+};
+
 function groupShoppingItems(items: ShoppingListItem[]): ShoppingPreviewGroup[] {
   const groupedItems = new Map<string, ShoppingListItem[]>();
 
@@ -79,6 +84,21 @@ function getMockMealPlanPreview(): MealPlanPreviewItem[] {
   });
 }
 
+function groupMealPlanByDay(items: MealPlanPreviewItem[]): MealPlanPreviewDay[] {
+  const groupedItems = new Map<string, MealPlanPreviewItem[]>();
+
+  for (const item of items) {
+    const meals = groupedItems.get(item.day) ?? [];
+    meals.push(item);
+    groupedItems.set(item.day, meals);
+  }
+
+  return Array.from(groupedItems.entries()).map(([day, meals]) => ({
+    day,
+    meals
+  }));
+}
+
 export default async function PlanPage() {
   const session = await getSession();
   const currentWeekStart = getCurrentWeekStart();
@@ -117,11 +137,12 @@ export default async function PlanPage() {
   const shoppingPreview = userShoppingList
     ? groupShoppingItems(userShoppingList.items)
     : getMockShoppingPreview();
+  const mealPlanPreviewByDay = groupMealPlanByDay(mealPlanPreview);
   const shoppingItemCount = userShoppingList?.items.length ?? 0;
   const checkedItemCount = userShoppingList?.items.filter((item) => item.checked).length ?? 0;
 
   return (
-    <main className="detail-shell">
+    <main className="detail-shell plan-shop-shell">
       <Link className="text-link" href="/">
         Back to Recipe Nook
       </Link>
@@ -137,31 +158,29 @@ export default async function PlanPage() {
         </div>
       </section>
 
-      <section className="planning-grid">
+      <section className="planning-grid plan-shop-grid">
         <article className="panel">
           <div className="section-heading">
             <p className="eyebrow">Meal Planning</p>
             <h2>Weekly calendar</h2>
           </div>
           {session ? <p className="shopping-preview-count">Week of {currentWeekStart}</p> : null}
-          {mealPlanPreview.length > 0 ? (
+          {mealPlanPreviewByDay.length > 0 ? (
             <div className="planner-list">
-              {mealPlanPreview.slice(0, 5).map((plan) => (
-                <div key={`${plan.day}-${plan.meal}-${plan.slug}`} className="planner-item">
-                  <div>
-                    <strong>{plan.day}</strong>
-                    <span>{plan.meal}</span>
-                  </div>
-                  <div>
-                    <Link className="planner-preview-link" href={`/recipes/${plan.slug}`}>
-                      {plan.title}
-                    </Link>
-                  </div>
+              {mealPlanPreviewByDay.map((group) => (
+                <div key={group.day} className="planner-day-preview">
+                  <p className="planner-day-title">{group.day}</p>
+                  <ul className="planner-day-meals">
+                    {group.meals.map((plan) => (
+                      <li key={`${plan.day}-${plan.meal}-${plan.slug}`}>
+                        <Link className="planner-preview-link" href={`/recipes/${plan.slug}`}>
+                          {plan.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
-              {mealPlanPreview.length > 5 ? (
-                <p className="shopping-preview-more">+{mealPlanPreview.length - 5} more meals</p>
-              ) : null}
             </div>
           ) : (
             <p className="shopping-preview-empty">

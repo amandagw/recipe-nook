@@ -464,6 +464,19 @@ textarea {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.plan-shop-shell {
+  width: min(1500px, calc(100% - 48px));
+}
+
+.plan-shop-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+  align-items: start;
+}
+
+.plan-shop-grid .panel {
+  min-height: 100%;
+}
+
 .stats-strip article,
 .feature-card,
 .panel {
@@ -810,20 +823,36 @@ textarea {
 
 .planner-list {
   display: grid;
-  gap: 12px;
+  gap: 0;
   margin-bottom: 14px;
 }
 
-.planner-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
+.planner-day-preview {
+  display: grid;
+  gap: 8px;
   padding: 14px 0;
   border-bottom: 1px dashed rgba(121, 92, 67, 0.2);
 }
 
-.planner-item:last-child {
+.planner-day-preview:last-child {
   border-bottom: 0;
+}
+
+.planner-day-title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.planner-day-meals {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.planner-day-meals li + li {
+  margin-top: 8px;
 }
 
 .planner-preview-link {
@@ -1304,6 +1333,7 @@ li + li {
   .capture-grid,
   .library-content,
   .planning-grid,
+  .plan-shop-grid,
   .detail-grid,
   .journal-section,
   .shopping-builder,
@@ -1331,6 +1361,10 @@ li + li {
   .detail-shell {
     width: min(100% - 20px, 1180px);
     padding-top: 20px;
+  }
+
+  .plan-shop-shell {
+    width: min(100% - 20px, 1180px);
   }
 
   .site-header {
@@ -1369,7 +1403,6 @@ li + li {
   .library-header,
   .detail-topbar,
   .journal-header,
-  .planner-item,
   .weekly-planner-heading {
     flex-direction: column;
     align-items: flex-start;
