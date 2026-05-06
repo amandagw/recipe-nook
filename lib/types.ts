@@ -1,7 +1,8 @@
 export type RecipeStatus = "To Try" | "Tried";
-export type Difficulty = "Easy" | "Medium" | "Project";
+export type Difficulty = 1 | 2 | 3 | 4 | 5;
 
 export type JournalEntry = {
+  id?: string;
   date: string;
   rating: number;
   wouldMakeAgain: boolean;

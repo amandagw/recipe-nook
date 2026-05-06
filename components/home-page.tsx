@@ -7,9 +7,11 @@ import { Difficulty, Recipe, RecipeStatus } from "@/lib/types";
 const filters: Array<RecipeStatus | "All"> = ["All", "To Try", "Tried"];
 const difficultyFilters: Array<Difficulty | "Any"> = [
   "Any",
-  "Easy",
-  "Medium",
-  "Project"
+  1,
+  2,
+  3,
+  4,
+  5
 ];
 
 const pinboardStickerSheet = "/scrapbook/title-sticker-sheet.png";
@@ -33,6 +35,10 @@ function getServingsLabel(servings: number) {
   }
 
   return `Serves ${servings}`;
+}
+
+function getDifficultyFilterLabel(difficulty: Difficulty | "Any") {
+  return difficulty === "Any" ? "Any" : `Difficulty ${difficulty}`;
 }
 
 export function HomePage({ recipes }: { recipes: Recipe[] }) {
@@ -151,10 +157,18 @@ export function HomePage({ recipes }: { recipes: Recipe[] }) {
             Difficulty
             <select
               value={difficulty}
-              onChange={(event) => setDifficulty(event.target.value as Difficulty | "Any")}
+              onChange={(event) =>
+                setDifficulty(
+                  event.target.value === "Any"
+                    ? "Any"
+                    : (Number(event.target.value) as Difficulty)
+                )
+              }
             >
               {difficultyFilters.map((option) => (
-                <option key={option}>{option}</option>
+                <option key={option} value={option}>
+                  {getDifficultyFilterLabel(option)}
+                </option>
               ))}
             </select>
           </label>
@@ -251,7 +265,10 @@ function RecipeInspector({ recipe }: { recipe: Recipe }) {
           </div>
         </div>
 
-        <div className="journal-card">
+        <Link
+          className="journal-card journal-card-link"
+          href={`/recipes/${recipe.slug}#cooking-journal`}
+        >
           <div className="journal-header">
             <div>
               <p className="small-label">Cooking Journal</p>
@@ -264,22 +281,28 @@ function RecipeInspector({ recipe }: { recipe: Recipe }) {
 
           {latestJournal ? (
             <>
-              <p>{latestJournal.notes}</p>
+              {latestJournal.notes ? (
+                <div className="journal-written-block">
+                  <p className="small-label">Notes</p>
+                  <p>{latestJournal.notes}</p>
+                </div>
+              ) : null}
               <div className="journal-stats">
                 <span>{latestJournal.actualCookingTime}</span>
-                <span>{latestJournal.difficulty}</span>
+                <span>Difficulty {latestJournal.difficulty}/5</span>
                 <span>{latestJournal.wouldMakeAgain ? "Would make again" : "Skip repeat"}</span>
               </div>
-              <div className="tag-row">
-                {latestJournal.modifications.map((modification) => (
-                  <span key={modification}>{modification}</span>
-                ))}
-              </div>
+              {latestJournal.modifications.length > 0 ? (
+                <div className="journal-written-block">
+                  <p className="small-label">Modifications & adjustments</p>
+                  <p>{latestJournal.modifications.join("\n")}</p>
+                </div>
+              ) : null}
             </>
           ) : (
             <p>Add your first journal entry after cooking to track rating, time, and tweaks.</p>
           )}
-        </div>
+        </Link>
 
         <div className="inspector-actions">
           <Link href={`/recipes/${recipe.slug}`} className="primary-button muted">

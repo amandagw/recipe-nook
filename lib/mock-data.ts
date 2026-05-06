@@ -47,7 +47,7 @@ export const recipes: Recipe[] = [
           "Added lemon zest at the end"
         ],
         actualCookingTime: "35 min",
-        difficulty: "Easy"
+        difficulty: 2
       }
     ]
   },
@@ -127,7 +127,7 @@ export const recipes: Recipe[] = [
         notes: "Great for weekday breakfasts but I want more texture next time.",
         modifications: ["Added toasted walnuts", "Reduced maple syrup slightly"],
         actualCookingTime: "45 min",
-        difficulty: "Easy"
+        difficulty: 2
       }
     ]
   }

@@ -1,10 +1,36 @@
-import { RecipeDocument } from "@/lib/models";
-import { Recipe } from "@/lib/types";
+import { RecipeDocument, RecipeNoteDocument } from "@/lib/models";
+import { Difficulty, JournalEntry, Recipe } from "@/lib/types";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1200&q=80";
 
-export function serializeRecipe(recipe: RecipeDocument): Recipe {
+function normalizeDifficulty(value: unknown): Difficulty {
+  const difficulty = Number(value);
+
+  if (difficulty >= 1 && difficulty <= 5) {
+    return Math.floor(difficulty) as Difficulty;
+  }
+
+  return 3;
+}
+
+export function serializeRecipeNote(note: RecipeNoteDocument): JournalEntry {
+  return {
+    id: note._id?.toString(),
+    date: note.cookedAt.toISOString(),
+    rating: note.rating,
+    wouldMakeAgain: note.wouldMakeAgain,
+    notes: note.notes,
+    modifications: note.modifications,
+    actualCookingTime: note.actualCookingTime,
+    difficulty: normalizeDifficulty(note.difficulty)
+  };
+}
+
+export function serializeRecipe(
+  recipe: RecipeDocument,
+  journal: JournalEntry[] = []
+): Recipe {
   return {
     id: recipe._id?.toString() ?? "",
     slug: recipe.slug,
@@ -22,6 +48,6 @@ export function serializeRecipe(recipe: RecipeDocument): Recipe {
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     notes: recipe.notes,
-    journal: []
+    journal
   };
 }

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CookingJournalSection } from "@/components/cooking-journal-section";
 import { DeleteRecipeButton } from "@/components/delete-recipe-button";
 import { getSession } from "@/lib/auth";
 import { recipes as mockRecipes } from "@/lib/mock-data";
-import { findRecipeBySlug } from "@/lib/repositories/recipes";
-import { serializeRecipe } from "@/lib/serializers";
+import { findRecipeBySlug, listRecipeNotesByRecipe } from "@/lib/repositories/recipes";
+import { serializeRecipe, serializeRecipeNote } from "@/lib/serializers";
 
 type PageProps = {
   params: Promise<{
@@ -99,7 +100,11 @@ export default async function RecipePage({ params }: PageProps) {
     notFound();
   }
 
-  const recipe = serializeRecipe(recipeDocument);
+  const recipeId = recipeDocument._id?.toString() ?? "";
+  const journal = recipeId
+    ? (await listRecipeNotesByRecipe(session.userId, recipeId)).map(serializeRecipeNote)
+    : [];
+  const recipe = serializeRecipe(recipeDocument, journal);
   const description = getDisplayDescription(recipe);
   const servings = getServingsLabel(recipe.servings);
 
@@ -151,6 +156,8 @@ export default async function RecipePage({ params }: PageProps) {
           {recipe.notes ? <p>{recipe.notes}</p> : null}
         </article>
       </section>
+
+      {recipe.id ? <CookingJournalSection recipeId={recipe.id} entries={recipe.journal} /> : null}
     </main>
   );
 }

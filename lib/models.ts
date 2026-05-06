@@ -63,9 +63,12 @@ export type ShoppingListDocument = {
   userId: ObjectId;
   title: string;
   items: Array<{
+    id: string;
     name: string;
     category: string;
     checked: boolean;
+    source: "recipe" | "manual";
+    recipeIds?: string[];
   }>;
   recipeIds: ObjectId[];
   createdAt: Date;

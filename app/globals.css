@@ -777,6 +777,22 @@ textarea {
   border: 1px solid rgba(121, 92, 67, 0.12);
 }
 
+.journal-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.journal-card-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 120, 97, 0.28);
+  box-shadow: 0 16px 34px rgba(61, 40, 28, 0.1);
+}
+
 .journal-header {
   display: flex;
   justify-content: space-between;
@@ -817,6 +833,123 @@ textarea {
   margin-bottom: 14px;
 }
 
+.shopping-preview-count,
+.shopping-preview-empty,
+.shopping-preview-more {
+  color: var(--muted);
+}
+
+.shopping-preview-count {
+  margin: -8px 0 16px;
+  font-weight: 700;
+}
+
+.shopping-preview-item-checked {
+  color: rgba(114, 95, 88, 0.68);
+  text-decoration: line-through;
+}
+
+.shopping-builder {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
+  gap: 18px;
+}
+
+.shopping-recipe-list,
+.shopping-add-form,
+.shopping-item-list {
+  display: grid;
+  gap: 12px;
+}
+
+.shopping-recipe-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(121, 92, 67, 0.12);
+}
+
+.shopping-recipe-option input,
+.shopping-item input {
+  width: auto;
+  accent-color: var(--rose);
+}
+
+.shopping-recipe-option span {
+  display: grid;
+  gap: 3px;
+}
+
+.shopping-recipe-option small {
+  color: var(--muted);
+}
+
+.shopping-status-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.shopping-list-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.shopping-category-card {
+  align-content: start;
+}
+
+.shopping-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(121, 92, 67, 0.18);
+}
+
+.shopping-item:last-child {
+  border-bottom: 0;
+}
+
+.shopping-item label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.shopping-item-checked span {
+  color: rgba(114, 95, 88, 0.68);
+  text-decoration: line-through;
+}
+
+.shopping-delete-button {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(155, 61, 45, 0.22);
+  color: #9b3d2d;
+  font-weight: 700;
+}
+
+.shopping-empty {
+  grid-column: 1 / -1;
+}
+
 .detail-topbar {
   display: flex;
   justify-content: space-between;
@@ -855,6 +988,100 @@ textarea {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.journal-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 18px;
+  margin-top: 18px;
+  scroll-margin-top: 120px;
+}
+
+.journal-entry-form,
+.journal-entry-list {
+  display: grid;
+  gap: 14px;
+}
+
+.journal-range-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.range-label-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.journal-range {
+  padding: 0;
+  accent-color: var(--rose);
+}
+
+.help-text {
+  color: rgba(114, 95, 88, 0.72);
+  font-size: 0.86rem;
+}
+
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.toggle-label input {
+  width: auto;
+  accent-color: var(--rose);
+}
+
+.journal-entry-card {
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255, 248, 241, 0.76);
+  border: 1px dashed rgba(121, 92, 67, 0.18);
+}
+
+.journal-entry-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.journal-entry-actions,
+.journal-edit-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.journal-edit-button {
+  padding: 8px 12px;
+}
+
+.journal-written-block {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.journal-written-block p:last-child {
+  margin: 0;
+  color: var(--ink);
+  white-space: pre-line;
+}
+
+.journal-empty {
+  color: var(--muted);
+}
+
 .empty-library {
   display: grid;
   gap: 14px;
@@ -882,7 +1109,10 @@ li + li {
   .capture-grid,
   .library-content,
   .planning-grid,
-  .detail-grid {
+  .detail-grid,
+  .journal-section,
+  .shopping-builder,
+  .shopping-list-grid {
     grid-template-columns: 1fr;
   }
 
@@ -891,7 +1121,8 @@ li + li {
   .shopping-columns,
   .filters,
   .inspector-columns,
-  .recipe-grid {
+  .recipe-grid,
+  .shopping-list-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -934,7 +1165,9 @@ li + li {
   .shopping-columns,
   .filters,
   .inspector-columns,
-  .recipe-grid {
+  .recipe-grid,
+  .journal-range-grid,
+  .shopping-list-grid {
     grid-template-columns: 1fr;
   }
 
