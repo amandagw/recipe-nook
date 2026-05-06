@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LinkRecipeImportForm } from "@/components/link-recipe-import-form";
 import { ManualRecipeForm } from "@/components/manual-recipe-form";
 import { getSession } from "@/lib/auth";
 import { listRecipesByUser } from "@/lib/repositories/recipes";
@@ -41,28 +42,10 @@ export default async function AddRecipePage() {
       </section>
 
       <section className="capture-grid">
-        <article className="panel panel-warm">
-          <div className="section-heading">
-            <p className="eyebrow">Add via URL</p>
-            <h2>Import from a link</h2>
-          </div>
-          <label className="input-label">
-            Recipe link
-            <input value="https://example.com/spicy-sesame-noodles" readOnly />
-          </label>
-          <div className="capture-preview">
-            <p className="small-label">Extracted preview</p>
-            <strong>Spicy Sesame Noodles</strong>
-            <span>Ingredients, steps, and title are auto-detected when available.</span>
-          </div>
-          <div className="tag-row">
-            <span>quick</span>
-            <span>noodles</span>
-            <span>dinner</span>
-          </div>
-          <button className="primary-button muted">Import recipe</button>
-        </article>
-
+        <LinkRecipeImportForm
+          folderOptions={savedOptions.folders}
+          tagOptions={savedOptions.tags}
+        />
         <ManualRecipeForm folderOptions={savedOptions.folders} tagOptions={savedOptions.tags} />
       </section>
     </main>
